@@ -1,0 +1,96 @@
+rules and input 
+
+
+.MODEL SMALL
+.STACK 500H
+
+.DATA
+PTC DB 'Press o to continue or N to exit: $'
+CONTINUE DB 'You chose to continue the game.$'
+EXIT_MSG DB 'Thank you for playing!$'
+PRESS_KEY DB 10, 13, 'Press any key to continue...$'
+
+; Game Rules
+R DB 10, 13, 'Game Rules:$'
+R1 DB 10, 13, '1. Players will take turns.$'
+R2 DB 10, 13, '2. Player 1 will start the game.$'
+R3 DB 10, 13, '3. Player 1 will set "X" and Player 2 will set "O".$'
+R4 DB 10, 13, '4. The board is marked with cell numbers.$'
+R5 DB 10, 13, '5. Enter CELL NUMBER to place your mark.$'
+R6 DB 10, 13, '6. Set 3 of your marks horizontally, vertically or diagonally to win.$'
+R7 DB 10, 13, 'Good Luck!$'
+
+; Macro to display a message
+DisplayRule MACRO rule
+    LEA DX, rule  ; Load the address of the rule into DX
+    CALL DisplayMessage
+ENDM
+
+.CODE
+MAIN PROC
+    MOV AX, @DATA
+    MOV DS, AX
+
+START:
+    ; Display Game Rules using the macro
+    DisplayRule R
+    DisplayRule R1
+    DisplayRule R2
+    DisplayRule R3
+    DisplayRule R4
+    DisplayRule R5
+    DisplayRule R6
+    DisplayRule R7
+
+    ; Prompt to continue
+    LEA DX, PRESS_KEY  ; Load the address of PRESS_KEY into DX
+    CALL DisplayMessage
+
+    ; Wait for any key to continue
+    MOV AH, 1
+    INT 21H
+
+    ; Prompt to continue
+    LEA DX, PTC  ; Load the address of PTC into DX
+    CALL DisplayMessage
+
+    ; Wait for user input
+    MOV AH, 1
+    INT 21H
+    CMP AL, 'Y'  ; Check if the user pressed 'Y'
+    JE CONTINUE_GAME
+    CMP AL, 'y'  ; Check if the user pressed 'y'
+    JE CONTINUE_GAME
+    CMP AL, 'N'  ; Check if the user pressed 'N'
+    JE EXIT_GAME
+    CMP AL, 'n'  ; Check if the user pressed 'n'
+    JE EXIT_GAME
+
+    ; If input is not 'Y' or 'N', loop back to prompt again
+    JMP START
+
+CONTINUE_GAME:
+    LEA DX, CONTINUE  ; Load the address of CONTINUE into DX
+    CALL DisplayMessage
+    ; Here you would call the game logic to start the game
+    ; For now, we will just go back to the start
+    JMP START
+
+EXIT_GAME:
+    LEA DX, EXIT_MSG  ; Load the address of EXIT_MSG into DX
+    CALL DisplayMessage
+
+    ; Wait for a key before exiting
+    MOV AH, 7
+    INT 21H
+
+    ; Exit the program
+    MOV AX, 4C00H
+    INT 21H
+
+; Procedure to display a message
+DisplayMessage PROC
+    MOV AH, 9
+    INT 21H
+    RET
+DisplayMessage ENDP

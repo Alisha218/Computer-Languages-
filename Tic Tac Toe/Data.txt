@@ -1,0 +1,14 @@
+
+Macros that can be made : 
+
+
+Display Message: A macro to display a string message.
+Set Cursor Position: A macro to set the cursor position.
+Clear Screen: A macro to clear the screen.
+Input Handling: A macro to read input and validate it.
+Check Win Condition: A macro to check for winning conditions.
+Update Board Cell: A macro to update a specific cell on the board.
+Display Board: A macro to display the current state of the board.
+Prompt for Play Again: A macro to prompt the user to play again.
+Display Game Rules: A macro to display the game rules.
+Handle Invalid Input: A macro to handle invalid input messages.

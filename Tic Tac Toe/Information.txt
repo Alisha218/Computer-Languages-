@@ -1,0 +1,38 @@
+The provided code is an assembly language program for a Tic-Tac-Toe game, designed to run in a DOS environment. It uses the x86 architecture and DOS interrupts for input and output. Below is a breakdown of the key components and functionality of the code:
+
+Key Components
+Data Section:
+
+The .DATA segment contains various strings and variables used throughout the game, including:
+The Tic-Tac-Toe logo (T1, T2, T3, T4).
+Game rules (R, R1, R2, etc.).
+Player markers (PC1 for Player 1, PC2 for Player 2).
+Cell numbers (C1 to C9).
+Messages for winning, drawing, and prompts for user input.
+Code Section:
+
+The .CODE segment contains the main logic of the game, including:
+Displaying the title screen and game rules.
+Initializing game variables.
+Handling player turns and input.
+Checking for winning conditions or a draw.
+Displaying the game board.
+Allowing players to play again or exit.
+Game Flow
+Title Screen: The game starts by displaying a logo and a prompt to continue.
+Game Rules: After pressing a key, the game rules are displayed.
+Game Initialization: Variables are initialized, including player markers and move counters.
+Player Turns: Players take turns entering their moves by selecting a cell number (1-9).
+Input Validation: The program checks if the input is valid (between 1-9) and if the selected cell is already taken.
+Winning Conditions: After each move, the program checks for winning conditions (three in a row) or a draw (if all cells are filled).
+Display Board: The current state of the board is displayed after each move.
+End of Game: If a player wins or if the game is a draw, a message is displayed, and players are prompted to play again or exit.
+Important Functions
+Display Functions: The program uses DOS interrupt INT 21H to display strings and messages on the screen.
+Input Handling: It uses INT 21H for reading user input, both with and without echo.
+Cursor Control: The program uses INT 10H to set the cursor position for displaying text.
+Example of Game Logic
+Checking for a Win: The CHECK section contains logic to check all possible winning combinations (rows, columns, diagonals) after each move.
+Handling Invalid Input: If a player enters an invalid cell number or selects a taken cell, the program informs the player and prompts for input again.
+Conclusion
+This assembly language program is a complete implementation of a Tic-Tac-Toe game, showcasing fundamental programming concepts such as loops, conditionals, and user input handling in a low-level programming environment. It serves as a good example for learning assembly language and understanding how to manage game logic and user interaction in a console application.

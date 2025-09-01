@@ -1,0 +1,261 @@
+Display Board 
+
+
+; ---------------------------
+; Macros for Board Management
+; ---------------------------
+
+; Macro to set cursor position
+SET_CURSOR MACRO ROW, COL
+    MOV AH, 2      ; Function to set cursor position
+    MOV BH, 0      ; Page number
+    MOV DH, ROW    ; Row position
+    MOV DL, COL    ; Column position
+    INT 10H        ; Call interrupt
+ENDM
+
+; Macro to print a string
+PRINT_STRING MACRO STRING_LABEL
+    LEA DX, STRING_LABEL ; Load the offset of the string
+    MOV AH, 9            ; Function to display string
+    INT 21H              ; Call interrupt
+ENDM
+
+; Macro to print a single character
+PRINT_CHAR MACRO CHAR
+    MOV DL, CHAR
+    MOV AH, 2      ; Function to display character
+    INT 21H        ; Call interrupt
+ENDM
+
+; Macro to initialize the game board
+INIT_BOARD MACRO
+    ; Initialize board cells with numbers 1 to 9
+    MOV C1, '1'
+    MOV C2, '2'
+    MOV C3, '3'
+    MOV C4, '4'
+    MOV C5, '5'
+    MOV C6, '6'
+    MOV C7, '7'
+    MOV C8, '8'
+    MOV C9, '9'
+ENDM
+
+; Macro to display the game board
+DISPLAY_BOARD MACRO
+    ; Print the first row
+    SET_CURSOR 5, 30
+    PRINT_CHAR C1
+    PRINT_STRING LINE_SEPARATOR
+    PRINT_CHAR C2
+    PRINT_STRING LINE_SEPARATOR
+    PRINT_CHAR C3
+
+    ; Print row separator
+    SET_CURSOR 6, 30
+    PRINT_STRING ROW_SEPARATOR
+
+    ; Print the second row
+    SET_CURSOR 7, 30
+    PRINT_CHAR C4
+    PRINT_STRING LINE_SEPARATOR
+    PRINT_CHAR C5
+    PRINT_STRING LINE_SEPARATOR
+    PRINT_CHAR C6
+
+    ; Print row separator
+    SET_CURSOR 8, 30
+    PRINT_STRING ROW_SEPARATOR
+
+    ; Print the third row
+    SET_CURSOR 9, 30
+    PRINT_CHAR C7
+    PRINT_STRING LINE_SEPARATOR
+    PRINT_CHAR C8
+    PRINT_STRING LINE_SEPARATOR
+    PRINT_CHAR C9
+ENDM
+
+; ---------------------------
+; Data Section
+; ---------------------------
+LINE_SEPARATOR DB '|$', 0
+ROW_SEPARATOR DB '-----$', 0
+
+; Variables for board cells
+C1 DB ?  ; Cell 1
+C2 DB ?  ; Cell 2
+C3 DB ?  ; Cell 3
+C4 DB ?  ; Cell 4
+C5 DB ?  ; Cell 5
+C6 DB ?  ; Cell 6
+C7 DB ?  ; Cell 7
+C8 DB ?  ; Cell 8
+C9 DB ?  ; Cell 9
+
+; Variables for player and input
+PLAYER DB 'X'    ; Default player
+CUR DB ?         ; Current input
+MOVES DB 0       ; Move count
+CURRENT_PLAYER_MSG DB 'Current Player: $', 0
+
+; Messages   
+INPUT_MSG DB 'Enter a cell number (1-9): $', 0
+WI DB 'Invalid input. Try again.$', 0
+TKN DB 'Cell already taken. Choose another.$', 0
+
+; ---------------------------
+; Code Section
+; ---------------------------
+MAIN PROC
+    ; Clear screen
+    MOV AX, 0600H
+    MOV BH, 07H
+    MOV CX, 0000H
+    MOV DX, 184FH
+    INT 10H
+
+    ; Initialize the board
+    INIT_BOARD
+
+    ; Display the initial board
+    DISPLAY_BOARD
+
+    ; Game loop
+GAME_LOOP:             
+
+    ; Display the current player message
+    SET_CURSOR 10, 20
+    PRINT_STRING CURRENT_PLAYER_MSG
+
+    ; Display the current player
+    SET_CURSOR 10, 40
+    PRINT_CHAR PLAYER
+
+    ; Prompt for input
+    SET_CURSOR 12, 20
+    PRINT_STRING INPUT_MSG
+
+    MOV AH, 1
+    INT 21H
+    MOV CUR, AL
+
+    ; Validate and process the input
+    INC MOVES
+    MOV BL, CUR
+    SUB BL, 48
+    MOV CL, PLAYER
+
+    ; Validate the range of input (1-9)
+    CMP BL, 1
+    JB INVALID_INPUT
+    CMP BL, 9
+    JA INVALID_INPUT
+
+    ; Check if the cell is already taken
+    CMP BL, 1
+    JZ C1U
+    CMP BL, 2
+    JZ C2U
+    CMP BL, 3
+    JZ C3U
+    CMP BL, 4
+    JZ C4U
+    CMP BL, 5
+    JZ C5U
+    CMP BL, 6
+    JZ C6U
+    CMP BL, 7
+    JZ C7U
+    CMP BL, 8
+    JZ C8U
+    CMP BL, 9
+    JZ C9U
+
+INVALID_INPUT:
+    DEC MOVES
+    SET_CURSOR 14, 20
+    PRINT_STRING WI
+    JMP GAME_LOOP
+
+; Mark the cell
+C1U:
+    CMP C1, 'X'
+    JZ TAKEN
+    CMP C1, 'O'
+    JZ TAKEN
+    MOV C1, CL
+    JMP UPDATE
+C2U:
+    CMP C2, 'X'
+    JZ TAKEN
+    CMP C2, 'O'
+    JZ TAKEN
+    MOV C2, CL
+    JMP UPDATE
+C3U:
+    CMP C3, 'X'
+    JZ TAKEN
+    CMP C3, 'O'
+    JZ TAKEN
+    MOV C3, CL
+    JMP UPDATE
+C4U:
+    CMP C4, 'X'
+    JZ TAKEN
+    CMP C4, 'O'
+    JZ TAKEN
+    MOV C4, CL
+    JMP UPDATE
+C5U:
+    CMP C5, 'X'
+    JZ TAKEN
+    CMP C5, 'O'
+    JZ TAKEN
+    MOV C5, CL
+    JMP UPDATE
+C6U:
+    CMP C6, 'X'
+    JZ TAKEN
+    CMP C6, 'O'
+    JZ TAKEN
+    MOV C6, CL
+    JMP UPDATE
+C7U:
+    CMP C7, 'X'
+    JZ TAKEN
+    CMP C7, 'O'
+    JZ TAKEN
+    MOV C7, CL
+    JMP UPDATE
+C8U:
+    CMP C8, 'X'
+    JZ TAKEN
+    CMP C8, 'O'
+    JZ TAKEN
+    MOV C8, CL
+    JMP UPDATE
+C9U:
+    CMP C9, 'X'
+    JZ TAKEN
+    CMP C9, 'O'
+    JZ TAKEN
+    MOV C9, CL
+    JMP UPDATE
+
+UPDATE:
+    DISPLAY_BOARD
+    JMP GAME_LOOP
+
+TAKEN:
+    DEC MOVES
+    SET_CURSOR 14, 20
+    PRINT_STRING TKN
+    JMP GAME_LOOP
+
+EXIT:
+    MOV AH, 4CH
+    INT 21H
+MAIN ENDP
+END MAIN
